@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export async function getBotResponse(userText) {
+export async function getBotResponse(userText,history=[]) {
   const API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY;
   const endpoint = "https://openrouter.ai/api/v1/chat/completions";
 
@@ -15,6 +15,7 @@ export async function getBotResponse(userText) {
             content:
               "Ти дружній помічник, який відповідає коротко і зрозуміло українською.",
           },
+          ...history,
           { role: "user", content: userText },
         ],
       },

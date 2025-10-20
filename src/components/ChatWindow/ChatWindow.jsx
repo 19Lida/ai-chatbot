@@ -9,7 +9,12 @@ import { getBotResponse } from '../../api';
 
     const handleSend=async()=>{
       if(!input.trim()) return;
-
+    const conversation = messages
+  .slice(-5) 
+  .map((msg) => ({
+    role: msg.sender === "user" ? "user" : "assistant",
+    content: msg.text,
+  }));
       // Додаємо повідомлення користувача
 setMessages((prev)=>[...prev,{text:userText,sender:"user"}])
 const userText = input;
@@ -17,10 +22,10 @@ setInput("");
 setLoading(true);
 // 2) Записуємо час початку, щоб виміряти, скільки зайняло "думання"
 const startTime =Date.now() 
- // 3) Отримуємо відповідь від бота (await)
+ // 3) Отримуємо відповідь від бота 
     let responseText;
     try {
-      responseText = await getBotResponse(userText);
+      responseText = await getBotResponse(userText,conversation);
     } catch (err) {
       console.error("Помилка при запиті бота:", err);
       responseText = "Вибач, сталася помилка. Спробуй ще раз.";
@@ -38,7 +43,7 @@ const startTime =Date.now()
       setLoading(false);
     }, delay);
   };
- // 🎯 Надсилання через Enter
+ 
   const handleKeyDown = (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
